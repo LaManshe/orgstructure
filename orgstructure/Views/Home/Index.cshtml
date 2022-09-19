@@ -1,0 +1,124 @@
+﻿@using orgstructure.Models.ViewModels
+@model IndexModel;
+@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h2 style="color:red">@ViewBag.Message</h2>
+    <h2>Импортировать из excel</h2>
+    @using (Html.BeginForm("Import", "Home", FormMethod.Post, new { enctype = "multipart/form-data", id = "frm-excel" }))
+    {
+        <div>
+            Load Excel-file:
+            <input type="file" name="fileExcel" id="fileExcel" />
+            <div>
+                <input type="submit" value="Загрузить" />
+            </div>
+        </div>
+    }
+    <hr />
+    <h2>Показать базу пользователей</h2>
+    @using (Html.BeginForm("Show", "Home", FormMethod.Get))
+    {
+        <div>
+            <input type="submit" value="Показать" />
+        </div>
+    }
+
+    <details>
+        <summary>
+            <h2>Добавить пользователя</h2>
+        </summary>
+        <hr />
+        @using (Html.BeginForm("Add", "Home", FormMethod.Post))
+        {
+            <div>
+                <h3>Имя</h3>
+                <input asp-for="addUserModel.Name" type="text" value="Иван" required />
+                <h3>Фамилия</h3>
+                <input asp-for="addUserModel.Surname" type="text" value="Иванов" required />
+                <h3>Отчество</h3>
+                <input asp-for="addUserModel.Patronymic" type="text" value="Иванович" required />
+                <h3>Отдел</h3>
+                <input asp-for="addUserModel.DepartmentTitle" type="text" value="Горе разработчики" required />
+                <h3>Должность</h3>
+                <input asp-for="addUserModel.PostTitle" type="text" value="Начинающий разработчик" required />
+
+                <input type="submit" value="Добавить" />
+            </div>
+        }
+    </details>
+
+    <details>
+        <summary>
+            <h2>Удалить пользователя по ИД</h2>
+        </summary>
+        <hr />
+        @using (Html.BeginForm("Delete", "Home", FormMethod.Post))
+        {
+            <div>
+                <h3>ИД</h3>
+                <input asp-for="deleteUserModel.Id" type="number" value="1" required />
+            
+                <input type="submit" value="Удалить" />
+            </div>
+        }
+    </details>
+
+    <details>
+        <summary>
+            <h2>Изменить пользователя по ИД</h2>
+        </summary>
+        <hr />
+        @using (Html.BeginForm("Change", "Home", FormMethod.Post))
+        {
+            <div>
+                <h3>ИД пользователя которого будем менять</h3>
+                <input asp-for="changeUserModel.Id" type="number" value="0" required />
+                <h3>Имя</h3>
+                <input asp-for="changeUserModel.Name" type="text" value="Иван" required />
+                <h3>Фамилия</h3>
+                <input asp-for="changeUserModel.Surname" type="text" value="Иванов" required />
+                <h3>Отчество</h3>
+                <input asp-for="changeUserModel.Patronymic" type="text" value="Иванович" required />
+                <h3>Отдел</h3>
+                <input asp-for="changeUserModel.DepartmentTitle" type="text" value="Горе разработчики" required />
+                <h3>Должность</h3>
+                <input asp-for="changeUserModel.PostTitle" type="text" value="Начинающий разработчик" required />
+
+                <input type="submit" value="Изменить" />
+            </div>
+        }
+    </details>
+
+    <details>
+        <summary>
+            <h2>Фильтр: количество пользователей в отделе</h2>
+        </summary>
+    <hr />
+    @using (Html.BeginForm("FilterCount", "Home", FormMethod.Get))
+    {
+        <div>
+            <input asp-for="departmentToFilter" type="text" value="HR отдел" required />
+
+            <input type="submit" value="Показать" />
+        </div>
+    }
+    </details>
+
+    <details>
+        <summary>
+            <h2>Фильтр: количество уникальных должностей в отделе</h2>
+        </summary>
+    <hr />
+    @using (Html.BeginForm("FilterPositions", "Home", FormMethod.Get))
+    {
+        <div>
+            <input asp-for="departmentToFilter" type="text" value="HR отдел" required />
+
+            <input type="submit" value="Показать" />
+        </div>
+    }
+    </details>
+</div>

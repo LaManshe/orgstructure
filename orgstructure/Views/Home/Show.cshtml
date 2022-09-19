@@ -1,0 +1,29 @@
+﻿@using orgstructure.Models.ViewModels
+@model ShowModel;
+
+@{
+    ViewData["Title"] = "Home Page 2";
+}
+
+<h1>Пользователи</h1>
+
+<table class="iksweb">
+	<tbody>
+		<tr>
+			<td><strong>ИД</strong></td>
+			<td><strong>Отдел</strong></td>
+			<td><strong>Должность</strong></td>
+			<td><strong>Имя</strong></td>
+		</tr>
+		@foreach(var user in @Model.users)
+		{
+			<tr>
+				<td>@user.Id</td>
+				<td>@user.DepartmentTitle</td>
+				<td>@user.PostTitle</td>
+				<td>@user.FullName</td>
+			</tr>
+		}
+	</tbody>
+</table>
+
