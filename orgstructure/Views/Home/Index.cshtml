@@ -25,6 +25,20 @@
             <input type="submit" value="Показать" />
         </div>
     }
+    <hr />
+    <h2>Показать базу пользователей отдела, родительским который является:</h2>
+    @using (Html.BeginForm("ShowFiltered", "Home", FormMethod.Get))
+    {
+        <div>
+            <select name="parent">
+                @foreach(var depTitle in Model.parentDepartments)
+                {
+                    <option value="@depTitle">@depTitle</option>
+                }
+            </select>
+            <input type="submit" value="Показать" />
+        </div>
+    }
 
     <details>
         <summary>
@@ -100,7 +114,13 @@
     @using (Html.BeginForm("FilterCount", "Home", FormMethod.Get))
     {
         <div>
-            <input asp-for="departmentToFilter" type="text" value="HR отдел" required />
+            
+            <select name="departmentToFilter">
+                @foreach (var depTitle in Model.departments)
+                {
+                    <option value="@depTitle">@depTitle</option>
+                }
+            </select>
 
             <input type="submit" value="Показать" />
         </div>
@@ -115,7 +135,12 @@
     @using (Html.BeginForm("FilterPositions", "Home", FormMethod.Get))
     {
         <div>
-            <input asp-for="departmentToFilter" type="text" value="HR отдел" required />
+            <select name="departmentToFilter">
+                @foreach (var depTitle in Model.departments)
+                {
+                    <option value="@depTitle">@depTitle</option>
+                }
+            </select>
 
             <input type="submit" value="Показать" />
         </div>

@@ -85,6 +85,70 @@ namespace orgstructure.Repository
 
             return users;
         }
+        public IEnumerable<vUser> Show(string filterDepartment)
+        {
+            if(filterDepartment == String.Empty) { return new List<vUser>(); }
+            
+            List<vUser> users = new List<vUser>();
+            List<User> usersTable = _context.Users.ToList();
+            int depId = GetDepartmentIdByTitle(filterDepartment);
+            List<Department> departmentList = GetAllParentDepartments(depId);
+            foreach(Department department in departmentList)
+            {
+                foreach(var user in usersTable)
+                {
+                    if(user.DepartmentId == department.Id)
+                    {
+                        users.Add(new vUser()
+                        {
+                            Id = user.Id,
+                            PostTitle = GetPostById(user.PostId),
+                            DepartmentTitle = GetDepartmentById(user.DepartmentId),
+                            FullName = String.Format($"{user.Surname} {user.Name} {user.Patronymic}")
+                        });
+                    }
+                }
+            }
+
+            return users;
+        }
+
+        private List<Department> GetAllParentDepartments(int depId)
+        {
+            List<Department> deps = _context.Departments.Where(department => department.ParentDepartmentId == depId).ToList();
+            List<int> breaker = deps.Select(x => x.Id).ToList();
+
+            Parents(ref deps, deps);
+
+            return deps;
+        }
+
+        private void Parents(ref List<Department> deps, List<Department> reqursDeps)
+        {
+            int finded = 0;
+            List<Department> newDeps = new List<Department>();
+            foreach(var department in _context.Departments.ToList())
+            {
+                foreach(var el in reqursDeps)
+                {
+                    if(department.ParentDepartmentId == el.Id && department != el)
+                    {
+                        newDeps.Add(department);
+                        finded++;
+                    }
+                }
+            }
+            if(finded > 0)
+            {
+                foreach(var dep in newDeps)
+                {
+                    deps.Add(dep);
+                }
+                Parents(ref deps, newDeps);
+            }
+            
+        }
+
         public void CreateUser(AddUser user)
         {
             User newUser = new User() { 
@@ -166,6 +230,25 @@ namespace orgstructure.Repository
 
             return _context.Posts.Count(x => x.DepartmentId == depId);
         }
+        public IEnumerable<string> GetParentDepartments()
+        {
+            List<string> result = new List<string>();
+
+            foreach (var el in _context.Departments.GroupBy(x => x.ParentDepartmentId).Select(g => g.First()).ToList())
+            {
+                if (el.ParentDepartmentId == -1)
+                {
+                    continue;
+                }
+                else
+                {
+                    result.Add(_context.Departments.FirstOrDefault(x => x.Id == el.ParentDepartmentId).Title);
+                }
+
+            }
+
+            return result;
+        }
         private int CreatePost(string? postTitle, int departmentId)
         {
             if (postTitle == String.Empty || postTitle == null) { postTitle = "Unknown"; }
@@ -226,6 +309,9 @@ namespace orgstructure.Repository
             return _context.Posts.FirstOrDefault(x => x.Id == postId).Title;
         }
 
-        
+        public IEnumerable<string> GetAllDepartments()
+        {
+            return _context.Departments.Select(x => x.Title).ToList();
+        }
     }
 }

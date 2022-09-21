@@ -19,7 +19,11 @@ namespace orgstructure.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            IndexModel indexModel = new IndexModel();
+            indexModel.parentDepartments = _usersRepository.GetParentDepartments();
+            indexModel.departments = _usersRepository.GetAllDepartments();
+
+            return View(indexModel);
         }
 
         public IActionResult Privacy()
@@ -57,6 +61,13 @@ namespace orgstructure.Controllers
             showModel.users = _usersRepository.Show();
 
             return View(showModel);
+        }
+        [HttpGet]
+        public IActionResult ShowFiltered(string parent)
+        {
+            ShowModel showModel = new ShowModel();
+            showModel.users = _usersRepository.Show(parent);
+            return View("Show", showModel);
         }
         [HttpPost]
         public IActionResult Add(AddUser addUserModel)
